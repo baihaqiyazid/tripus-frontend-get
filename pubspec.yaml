@@ -20,6 +20,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
   intl: ^0.18.1
   timeago: ^3.5.0
+  skeletons: ^0.0.3
+  calendar_date_picker2: ^0.5.2
 
 dev_dependencies: 
   flutter_lints: ^2.0.0
@@ -29,5 +31,6 @@ dev_dependencies:
 flutter: 
   assets: 
     - assets/
+    - assets/payment/
   uses-material-design: true
 

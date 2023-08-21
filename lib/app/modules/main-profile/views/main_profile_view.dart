@@ -5,12 +5,13 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:tripusfrontend/app/controllers/home_page_controller.dart';
 import 'package:tripusfrontend/app/data/models/feeds_home_model.dart';
 import 'package:tripusfrontend/app/data/models/user_model.dart';
 import 'package:tripusfrontend/app/data/static_data.dart';
+import 'package:tripusfrontend/app/helpers/loading_widget.dart';
 import 'package:tripusfrontend/app/modules/profile/views/profile_view.dart';
 
+import '../../../controllers/home_page_controller.dart';
 import '../../../helpers/theme.dart';
 import '../controllers/main_profile_controller.dart';
 
@@ -24,20 +25,25 @@ class MainProfileView extends StatefulWidget {
 }
 
 class _MainProfileViewState extends State<MainProfileView> {
-  final homePageController = Get.find<HomePageController>();
-  final MainProfileController controller = Get.put(MainProfileController());
+
+  late HomePageController homePageController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    controller.updateData(int.parse(Get.parameters['id'] ?? '0'));
+    Get.lazyPut(() => MainProfileController());
+
+    Future.delayed(Duration.zero, () async {
+      Get.find<MainProfileController>().updateData(
+          int.parse(Get.parameters['id'] ?? '0'));
+      homePageController = Get.find<HomePageController>();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build');
-    print(Get.parameters['id']);
-    print(controller.usersData.first.name);
+    // print('build');
+    // print(Get.parameters['id']);
 
     Widget navigation() {
       return Obx(() {
@@ -93,7 +99,10 @@ class _MainProfileViewState extends State<MainProfileView> {
                     items: [
                       BottomNavigationBarItem(
                           icon: Text(
-                            '${controller.feedsUserLogged.length} Photos',
+                            '${Get
+                                .find<MainProfileController>()
+                                .feedsUserLogged
+                                .length} Photos',
                             style: primaryTextStylePlusJakartaSans.copyWith(
                                 fontWeight: semibold,
                                 fontSize: Get.size.height * 0.014,
@@ -104,7 +113,10 @@ class _MainProfileViewState extends State<MainProfileView> {
                           label: ''),
                       BottomNavigationBarItem(
                           icon: Text(
-                            '${controller.feedsLikeUserLogged.length} Likes',
+                            '${Get
+                                .find<MainProfileController>()
+                                .feedsLikeUserLogged
+                                .length} Likes',
                             style: primaryTextStylePlusJakartaSans.copyWith(
                                 fontWeight: semibold,
                                 fontSize: Get.size.height * 0.014,
@@ -115,7 +127,9 @@ class _MainProfileViewState extends State<MainProfileView> {
                           label: ''),
                       BottomNavigationBarItem(
                           icon: Text(
-                            '${controller.feedsSaveUserLogged
+                            '${Get
+                                .find<MainProfileController>()
+                                .feedsSaveUserLogged
                                 .length} Collections',
                             style: primaryTextStylePlusJakartaSans.copyWith(
                                 fontWeight: semibold,
@@ -139,33 +153,51 @@ class _MainProfileViewState extends State<MainProfileView> {
       switch (widget.currentIndex) {
         case 0:
           return ProfileView(
-            feedsUserLogged: controller.feedsUserLogged,
-            users: controller.usersData,
+            feedsUserLogged: Get
+                .find<MainProfileController>()
+                .feedsUserLogged,
+            users: Get
+                .find<MainProfileController>()
+                .usersData,
           );
         case 1:
           return ProfileView(
-            feedsUserLogged: controller.feedsLikeUserLogged,
-            users: controller.usersData,
+            feedsUserLogged: Get
+                .find<MainProfileController>()
+                .feedsLikeUserLogged,
+            users: Get
+                .find<MainProfileController>()
+                .usersData,
           );
         case 2:
           return ProfileView(
-            feedsUserLogged: controller.feedsSaveUserLogged!,
-            users: controller.usersData,
+            feedsUserLogged: Get
+                .find<MainProfileController>()
+                .feedsSaveUserLogged!,
+            users: Get
+                .find<MainProfileController>()
+                .usersData,
           );
         default:
           return ProfileView(
-            feedsUserLogged: controller.feedsUserLogged!,
-            users: controller.usersData,);
+            feedsUserLogged: Get
+                .find<MainProfileController>()
+                .feedsUserLogged!,
+            users: Get
+                .find<MainProfileController>()
+                .usersData,);
       }
     }
-    return Scaffold(
-      extendBody: true,
-      body: Stack(
-        children: [
-          body(),
-          Align(alignment: Alignment.bottomCenter, child: navigation())
-        ],
-      ),
-    );
+    return Get.find<MainProfileController>().obx((state) {
+      return Scaffold(
+        extendBody: true,
+        body: Stack(
+          children: [
+            body(),
+            Align(alignment: Alignment.bottomCenter, child: navigation())
+          ],
+        ),
+      );
+    }, onLoading: Center(child: LoadingWidget()), onEmpty: Container() );
   }
 }

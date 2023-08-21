@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletons/skeletons.dart';
 import 'package:tripusfrontend/app/data/models/feeds_home_model.dart';
 import 'package:tripusfrontend/app/data/static_data.dart';
 import 'package:tripusfrontend/app/helpers/carousel_widget.dart';
@@ -51,7 +52,7 @@ class _FeedDetailViewState extends State<FeedDetailView> {
   @override
   Widget build(BuildContext context) {
     // print(feeds?.description);
-    // print('id param ${Get.parameters['id']}');
+    // print('id param ${Get.parameters.id}');
     String? name = feeds!.user!.name;
     String? userName = name != null ? toBeginningOfSentenceCase(name) : '';
 
@@ -66,6 +67,20 @@ class _FeedDetailViewState extends State<FeedDetailView> {
               child: Image.network(
                 urlImage + item.imageUrl!,
                 fit: BoxFit.cover, width: double.infinity,
+                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      // Image is fully loaded
+                      return child;
+                    } else {
+                      // Image is still loading, show a loading widget
+                      return SkeletonAvatar(
+                        style: SkeletonAvatarStyle(
+                            width: double.infinity,
+                            height: double.infinity
+                        ),
+                      ); // Replace with your LoadingWidget
+                    }
+                  }
               ),
             ),
           ),
@@ -108,7 +123,7 @@ class _FeedDetailViewState extends State<FeedDetailView> {
                           icon: Icon(Icons.arrow_back),
                           onPressed: () {
                             final MainProfileController mainProfileController = Get.find();
-                            mainProfileController.updateData(GetStorage().read('user')['id']);
+                            mainProfileController.updateData(feeds!.user!.id!);
                             Get.back(); // Navigasi kembali ke halaman sebelumnya
                           },
                         ),

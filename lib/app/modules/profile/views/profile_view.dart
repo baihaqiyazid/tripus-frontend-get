@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletons/skeletons.dart';
 import 'package:tripusfrontend/app/data/models/user_model.dart';
 import 'package:tripusfrontend/app/helpers/avatar_custom.dart';
 
@@ -20,6 +21,7 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    print(users!.first.name);
     String? name = users!.first.name;
     String? userName = name != null ? toBeginningOfSentenceCase(name) : '';
 
@@ -29,7 +31,7 @@ class ProfileView extends GetView<ProfileController> {
           margin: EdgeInsets.only(top: 16),
           child: ElevatedButton(
             onPressed: () {
-              Get.toNamed(Routes.EDIT_PROFILE);
+              Get.toNamed(Routes.EDIT_PROFILE, arguments: users!.first);
             },
             style: ButtonStyle(
               padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
@@ -102,6 +104,24 @@ class ProfileView extends GetView<ProfileController> {
     return Scaffold(
       body: Stack(
         children: [
+          users?.first.backgroundImageUrl != null ?
+          Image.network(urlImage + users!.first.backgroundImageUrl!, width: double.infinity,
+            fit: BoxFit.cover,
+            height: Get.size.height / 3.5,
+            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) {
+                // Image is fully loaded
+                return child;
+              } else {
+                // Image is still loading, show a loading widget
+                return SkeletonAvatar(
+                  style: SkeletonAvatarStyle(
+                      width: double.infinity,
+                      height: Get.size.height / 3.5
+                  ),
+                ); // Replace with your LoadingWidget
+              }
+            },)    :
           Image.asset(
             'assets/feeds_example.png',
             width: double.infinity,
@@ -124,12 +144,16 @@ class ProfileView extends GetView<ProfileController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  users?.first.profilePhotoPath == null ?
                   AvatarCustom(name: users!.first.name!,
                       width: 150,
                       height: 150,
                       color: Colors.blue,
                       fontSize: 40,
-                      radius: 50),
+                      radius: 50) : CircleAvatar(
+              radius: 60, // Set the radius to control the size of the circle
+              backgroundImage: NetworkImage(urlImage +  users!.first.profilePhotoPath!),
+            ),
                   const SizedBox(height: 8,),
                   Text(
                     userName!, style: primaryTextStylePlusJakartaSans.copyWith(
@@ -174,7 +198,18 @@ class ProfileView extends GetView<ProfileController> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(
-                                      urlImage + imageUrl!, fit: BoxFit.cover),
+                                      urlImage + imageUrl!,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          // Image is fully loaded
+                                          return child;
+                                        } else {
+                                          // Image is still loading, show a loading widget
+                                          return SkeletonAvatar();// Replace with your LoadingWidget
+                                        }
+                                      }
+                                  ),
                                 )
                             );
                           }

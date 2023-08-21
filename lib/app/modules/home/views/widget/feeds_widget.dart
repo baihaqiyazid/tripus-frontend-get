@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:skeletons/skeletons.dart';
 import 'package:tripusfrontend/app/controllers/feeds_controller.dart';
 import 'package:tripusfrontend/app/helpers/format_datetime.dart';
 import 'package:tripusfrontend/app/routes/app_pages.dart';
@@ -166,11 +167,10 @@ class _FeedsWidgetState extends State<FeedsWidget> {
                 ],
               )
             : IconButton(
-                onPressed: () {},
-                icon: Image.asset(
-                  'assets/icon_profile_default.png',
-                  width: 31,
-                  height: 31,
+                onPressed: () => Get.toNamed(Routes.MAIN_PROFILE, parameters: {'id': widget.feeds.user!.id.toString()}),
+                icon:  CircleAvatar(
+                  radius: 50, // Set the radius to control the size of the circle
+                  backgroundImage: NetworkImage(urlImage + widget.feeds.user!.profilePhotoPath!),
                 ),
               ),
         Column(
@@ -236,6 +236,20 @@ class _FeedsWidgetState extends State<FeedsWidget> {
                       child: Image.network(
                         urlImage + item.imageUrl!,
                         fit: BoxFit.cover, width: double.infinity,
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              // Image is fully loaded
+                              return child;
+                            } else {
+                              // Image is still loading, show a loading widget
+                              return SkeletonAvatar(
+                                style: SkeletonAvatarStyle(
+                                    width: double.infinity,
+                                    height: double.infinity
+                                ),
+                              ); // Replace with your LoadingWidget
+                            }
+                          }
                       ),
                     ),
                   ),

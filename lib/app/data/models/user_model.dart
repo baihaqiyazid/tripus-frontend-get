@@ -13,6 +13,7 @@ class User {
   dynamic twoFactorConfirmedAt;
   dynamic currentTeamId;
   String? profilePhotoPath;
+  String? backgroundImageUrl;
   String? createdAt;
   String? updatedAt;
   String? role;
@@ -54,6 +55,7 @@ class User {
     twoFactorConfirmedAt = json['two_factor_confirmed_at'];
     currentTeamId = json['current_team_id'];
     profilePhotoPath = json['profile_photo_path'];
+    backgroundImageUrl = json['background_image_url'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     role = json['role'];
@@ -77,6 +79,7 @@ class User {
     data['phone_number'] = phoneNumber;
     data['otp_code'] = otpCode;
     data['profile_photo_path'] = profilePhotoPath;
+    data['background_image_url'] = backgroundImageUrl;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['profile_photo_url'] = profilePhotoUrl;

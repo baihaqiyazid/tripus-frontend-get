@@ -24,7 +24,8 @@ class _SplashViewState extends State<SplashView>{
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(seconds: 2), () {
-      print("read storage ${GetStorage().read('user')}");
+      // GetStorage().erase();
+      print("read storage ${GetStorage().read('user').runtimeType}");
       if (GetStorage().read('user') != null) {
         Get.offNamed('/home');
       } else {

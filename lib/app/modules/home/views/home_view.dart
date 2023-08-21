@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:tripusfrontend/app/controllers/home_page_controller.dart';
 import 'package:tripusfrontend/app/modules/home/views/post_feeds_view.dart';
 import 'package:tripusfrontend/app/modules/home/views/widget/feeds_widget.dart';
@@ -24,18 +25,18 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
 
-  final controller = Get.find<HomePageController>();
-  final UserController = Get.find<UserAuthController>();
-  final box = StaticData.box.read('user');
+  final box =  GetStorage().read('user');
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      controller.getData();
-      UserController.getAllUsers();
+    Get.lazyPut(() => UserAuthController());
+    Get.lazyPut(() => HomePageController());
+    Future.delayed(Duration.zero, () async {
+      Get.find<HomePageController>().getData();
+      Get.find<UserAuthController>().getAllUsers();
+      Get.find<UserAuthController>().getAllPaymentAccountUsers();
     });
     super.initState();
-
   }
 
   @override
@@ -136,7 +137,7 @@ class _HomeViewState extends State<HomeView> {
                         ? IconButton(
                       onPressed: () {
                         print('tap');
-                        Get.toNamed(Routes.MAIN_PROFILE, parameters: {'id': box['id'].toString()});
+                        Get.toNamed(Routes.MAIN_PROFILE, parameters: {'id': box.id.toString()});
                       },
                           icon: AvatarCustom(
                       name: box['name'],
@@ -149,12 +150,12 @@ class _HomeViewState extends State<HomeView> {
                         )
                         : IconButton(
                       onPressed: () {
-                        print('tap');
-                        Get.toNamed(Routes.MAIN_PROFILE);
+                        Get.toNamed(Routes.MAIN_PROFILE, parameters: {'id': box['id'].toString()});
                       },
-                      icon: Image.asset(
-                        'assets/icon_profile_default.png', width: 30,
-                        height: 30,),
+                      icon: CircleAvatar(
+                        radius: 50, // Set the radius to control the size of the circle
+                        backgroundImage: NetworkImage(urlImage + box['profile_photo_path']),
+                      ),
                     ),
                   ),
                 ],
