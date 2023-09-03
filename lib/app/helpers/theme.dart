@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-String url = "http://192.168.100.36:8000/api";
-String urlImage = "http://192.168.100.36:8000/";
+String url = "https://tripus.id/public/api";
+String urlImage = "https://tripus.id/public/";
 
 Color backgroundColor = Color(0xffFFFFFF);
 Color textPrimaryColor = Color(0xff191D21);

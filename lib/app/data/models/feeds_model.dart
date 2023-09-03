@@ -17,8 +17,8 @@ class Feed {
       this.feedImage});
 
   Feed.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    userId = json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null;
     description = json['description'];
     location = json['location'];
     createdAt = json['created_at'];
@@ -57,8 +57,8 @@ class FeedImage {
       {this.id, this.feedId, this.imageUrl, this.createdAt, this.updatedAt});
 
   FeedImage.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    feedId = json['feed_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    feedId = json['feed_id'] != null ? int.tryParse(json['feed_id'].toString()) : null;
     imageUrl = json['image_url'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

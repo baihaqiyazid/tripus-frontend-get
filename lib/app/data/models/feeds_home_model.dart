@@ -3,18 +3,43 @@ class FeedsHome {
   int? userId;
   String? description;
   String? location;
+  String? type;
+  String? title;
+  String? meetingPoint;
+  String? include;
+  String? exclude;
+  String? others;
+  String? categoryId;
+  String? dateStart;
+  String? dateEnd;
+  int? fee;
+  int? maxPerson;
+  String? paymentAccount;
   String? createdAt;
   String? updatedAt;
   List<FeedImage>? feedImage;
   UserHome? user;
   List<FeedsHomeLikes>? feedsLikes;
   List<FeedsHomeLikes>? feedsSaves;
+  List<FeedsHomeLikes>? feedsJoin;
 
   FeedsHome(
       {this.id,
       this.userId,
       this.description,
       this.location,
+        this.title,
+        this.type,
+        this.meetingPoint,
+        this.include,
+        this.exclude,
+        this.others,
+        this.categoryId,
+        this.dateStart,
+        this.dateEnd,
+        this.fee,
+        this.maxPerson,
+        this.paymentAccount,
       this.createdAt,
       this.updatedAt,
       this.feedImage,
@@ -23,10 +48,22 @@ class FeedsHome {
       this.feedsSaves});
 
   FeedsHome.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    userId = json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null;
     description = json['description'];
     location = json['location'];
+    type = json['type'];
+    title = json['title'];
+    meetingPoint = json['meetingPoint'];
+    include = json['include'];
+    exclude = json['exclude'];
+    others = json['others'];
+    categoryId = json['category_id'];
+    dateStart = json['date_start'];
+    dateEnd = json['date_end'];
+    fee = json['fee'];
+    maxPerson = json['max_person'];
+    paymentAccount = json['payment_account'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['feed_image'] != null) {
@@ -48,6 +85,12 @@ class FeedsHome {
         feedsSaves?.add(FeedsHomeLikes.fromJson(v));
       });
     }
+    if (json['feeds_join'] != null) {
+      feedsJoin = <FeedsHomeLikes>[];
+      json['feeds_join'].forEach((v) {
+        feedsJoin?.add(FeedsHomeLikes.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +99,17 @@ class FeedsHome {
     data['user_id'] = userId;
     data['description'] = description;
     data['location'] = location;
+    data['type'] = type;
+    data['title'] = title;
+    data['include'] = include;
+    data['exclude'] = exclude;
+    data['others'] = others;
+    data['category_id'] = categoryId;
+    data['date_start'] = dateStart;
+    data['date_end'] = dateEnd;
+    data['fee'] = fee;
+    data['max_person'] = maxPerson;
+    data['payment_account'] = paymentAccount;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     if (feedImage != null) {
@@ -74,6 +128,11 @@ class FeedsHome {
     }else {
       data['feeds_saves'] = [];
     }
+    if (feedsJoin != null) {
+      data['feeds_join'] = feedsJoin?.map((v) => v.toJson()).toList();
+    }else {
+      data['feeds_join'] = [];
+    }
     return data;
   }
 }
@@ -89,8 +148,8 @@ class FeedImage {
       {this.id, this.feedId, this.imageUrl, this.createdAt, this.updatedAt});
 
   FeedImage.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    feedId = json['feed_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    feedId = json['feed_id'] != null ? int.tryParse(json['feed_id'].toString()) : null;
     imageUrl = json['image_url'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -148,7 +207,7 @@ class UserHome {
       this.profilePhotoUrl});
 
   UserHome.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
     name = json['name'];
     username = json['username'];
     email = json['email'];
@@ -203,9 +262,9 @@ class FeedsHomeLikes {
       {this.id, this.feedId, this.userId, this.createdAt, this.updatedAt});
 
   FeedsHomeLikes.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    feedId = json['feed_id'];
-    userId = json['user_id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
+    feedId = json['feed_id'] != null ? int.tryParse(json['feed_id'].toString()) : null;
+    userId = json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../../controllers/user_auth_controller.dart';
+import '../../../data/static_data.dart';
 import '../../../helpers/loading_widget.dart';
 import '../../../helpers/theme.dart';
 import '../controllers/payment_account_controller.dart';
@@ -31,7 +32,9 @@ class _PaymentAccountViewState extends State<PaymentAccountView> {
 
   @override
   Widget build(BuildContext context) {
+    print("build");
     List<Map<String, dynamic>> paymentAccount = GetStorage().read('payment_account');
+
     print(paymentAccount.runtimeType);
     Widget content(String payment_method_id, String number, int id) {
       return Container(
@@ -61,9 +64,11 @@ class _PaymentAccountViewState extends State<PaymentAccountView> {
                   ? IconButton(
                       onPressed: () async{
                         await Get.find<UserAuthController>().deletePaymentAccount(id);
+                        print("start set");
                         setState(() {
-                          paymentAccount = GetStorage().read('payment_account');
+                          paymentAccount = StaticData.box.read('payment_account');
                         });
+                        print("start set end");
                       },
                       splashRadius: 25,
                       iconSize: 20,
@@ -157,11 +162,12 @@ class _PaymentAccountViewState extends State<PaymentAccountView> {
         body: Container(
           margin: EdgeInsets.all(30),
           child: Get.find<UserAuthController>().obx((state) {
+            print("len state: ${state.length}" );
             return Column(
               children: [
-                paymentAccount != null
+                state != null
                     ? Column(
-                        children: paymentAccount.map<Widget>((e) {
+                        children: state.map<Widget>((e) {
                           return content(e['payment_method_id'],
                               e['number'].toString(), e['id']);
                         }).toList(),

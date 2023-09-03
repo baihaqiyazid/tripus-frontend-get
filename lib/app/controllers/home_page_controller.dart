@@ -26,10 +26,10 @@ class HomePageController extends GetxController with StateMixin<List<FeedsHome>>
     dialogError(message);
   }
 
-  void getData() {
+  Future<dynamic> getData() async{
       change(null, status: RxStatus.loading());
       try {
-        HomePageProvider()
+        await HomePageProvider()
             .getData()
             .then((response) {
           print("response : ${response.body}");

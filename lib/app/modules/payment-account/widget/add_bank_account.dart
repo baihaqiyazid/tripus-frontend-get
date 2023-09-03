@@ -37,13 +37,13 @@ class _AddPaymentBottomSheetState extends State<AddPaymentBottomSheet> {
       });
     }
 
-    handlePostPayment(){
+    handlePostPayment() async{
       print("START");
 
       print(selectedBank);
       print(accountNumberController.text);
 
-      Get.find<UserAuthController>().addPaymentAccount(selectedBank, accountNumberController.text);
+      await Get.find<UserAuthController>().addPaymentAccount(selectedBank, accountNumberController.text);
       Get.back();
     }
 

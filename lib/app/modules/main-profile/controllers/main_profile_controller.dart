@@ -13,22 +13,19 @@ class MainProfileController extends GetxController with StateMixin<dynamic> {
 
   void updateData(int newIndexValue) {
     change(null, status: RxStatus.loading());
-    print('dipanggil');
+
     feedsUserLogged.assignAll(StaticData.feeds
         .where((element) => element.userId == newIndexValue)
         .toList());
 
-    print('dipanggil2');
     feedsLikeUserLogged.assignAll(StaticData.feeds.where((element) =>
-        element.feedsLikes!.any((elementLike) => elementLike.userId == newIndexValue)).toList());
+        element.feedsLikes != null && element.feedsLikes!.any((elementLike) => elementLike.userId == newIndexValue)).toList());
 
-    print('dipanggil3');
     feedsSaveUserLogged.assignAll(StaticData.feeds.where((element) =>
-        element.feedsSaves!.any((elementSave) => elementSave.userId == newIndexValue)).toList());
+        element.feedsSaves  != null && element.feedsSaves!.any((elementSave) => elementSave.userId == newIndexValue)).toList());
 
-    print('dipanggil4');
     usersData.assignAll(StaticData.users.where((element) => element.id == newIndexValue).toList());
-    print('data user: ${usersData.first.name}');
+    // print('data user: ${usersData.first.name}');
     change(null, status: RxStatus.success());
   }
 

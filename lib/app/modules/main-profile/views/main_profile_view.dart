@@ -34,7 +34,7 @@ class _MainProfileViewState extends State<MainProfileView> {
     Get.lazyPut(() => MainProfileController());
 
     Future.delayed(Duration.zero, () async {
-      Get.find<MainProfileController>().updateData(
+       Get.find<MainProfileController>().updateData(
           int.parse(Get.parameters['id'] ?? '0'));
       homePageController = Get.find<HomePageController>();
     });

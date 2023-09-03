@@ -7,7 +7,8 @@ class AvatarCustom extends StatefulWidget {
   Color color;
   double fontSize;
   double radius;
-  AvatarCustom ({super.key, required this.name, required this.width, required this.height, required this.color, required this.fontSize, required this.radius});
+  Color? backgroundColor;
+  AvatarCustom ({super.key, required this.name, required this.width, required this.height, required this.color, required this.fontSize, required this.radius, this.backgroundColor = Colors.blueAccent});
 
   @override
   State<AvatarCustom> createState() => AvatarCustom_State();
@@ -33,8 +34,9 @@ class AvatarCustom_State extends State<AvatarCustom> {
 
     return CircleAvatar(
       radius: widget.radius,
+      backgroundColor: widget.backgroundColor,
       child: Center(
-        child: Text(getInitials(widget.name), style: TextStyle(color: Colors.white, fontSize: widget.fontSize),
+        child: Text(getInitials(widget.name), style: TextStyle(color: widget.color, fontSize: widget.fontSize),
     )));
   }
 }

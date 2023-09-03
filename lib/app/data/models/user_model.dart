@@ -42,7 +42,7 @@ class User {
       this.profilePhotoUrl});
 
   User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] != null ? int.tryParse(json['id'].toString()) : null;
     name = json['name'];
     username = json['username'];
     email = json['email'];

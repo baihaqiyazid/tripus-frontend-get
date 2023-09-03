@@ -21,6 +21,8 @@ abstract class Routes {
   static const PROFILE_SETTINGS = _Paths.PROFILE_SETTINGS;
   static const CHANGE_PASSWORD = _Paths.CHANGE_PASSWORD;
   static const PAYMENT_ACCOUNT = _Paths.PAYMENT_ACCOUNT;
+  static const BOOK_TICKET = _Paths.BOOK_TICKET;
+  static const HISTORY_TRANSACTION = _Paths.HISTORY_TRANSACTION;
 }
 
 abstract class _Paths {
@@ -43,4 +45,6 @@ abstract class _Paths {
   static const PROFILE_SETTINGS = '/profile-settings';
   static const CHANGE_PASSWORD = '/change-password';
   static const PAYMENT_ACCOUNT = '/payment-account';
+  static const BOOK_TICKET = '/book-ticket';
+  static const HISTORY_TRANSACTION = '/history-transaction';
 }

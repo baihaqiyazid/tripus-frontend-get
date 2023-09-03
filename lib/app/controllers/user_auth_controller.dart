@@ -12,7 +12,7 @@ import '../helpers/dialog_widget.dart';
 import '../modules/main-profile/controllers/main_profile_controller.dart';
 import 'home_page_controller.dart';
 
-class UserAuthController extends GetxController with StateMixin<User> {
+class UserAuthController extends GetxController with StateMixin<dynamic> {
   //TODO: Implement UserAuthController
 
   static var userAuth = GetStorage();
@@ -61,6 +61,8 @@ class UserAuthController extends GetxController with StateMixin<User> {
             Get.toNamed('/verify', arguments: data.token);
           } catch (e) {
             responseStatusError(null, e.toString(), RxStatus.error());
+          } finally {
+            change(null, status: RxStatus.empty());
           }
         } else {
           change(null, status: RxStatus.error());
@@ -142,6 +144,8 @@ class UserAuthController extends GetxController with StateMixin<User> {
             Get.offAllNamed('/home');
           } catch (e) {
             responseStatusError(null, e.toString(), RxStatus.error());
+          } finally {
+            change(null, status: RxStatus.empty());
           }
         }
       }, onError: (e) {
@@ -182,6 +186,8 @@ class UserAuthController extends GetxController with StateMixin<User> {
             } catch (e) {
               print(e.toString());
               responseStatusError(null, e.toString(), RxStatus.error());
+            } finally {
+              change(null, status: RxStatus.empty());
             }
           } else {}
         });
@@ -191,7 +197,8 @@ class UserAuthController extends GetxController with StateMixin<User> {
     }
   }
 
-  void getAllUsers() async {
+  Future<dynamic> getAllUsers() async {
+    print('start');
     change(null, status: RxStatus.loading());
     try {
       await UserProvider().getAllUsers().then((response) {
@@ -226,6 +233,8 @@ class UserAuthController extends GetxController with StateMixin<User> {
           } catch (e) {
             print(e.toString());
             responseStatusError(null, e.toString(), RxStatus.error());
+          } finally {
+            change(null, status: RxStatus.empty());
           }
         } else {}
       });
@@ -279,6 +288,8 @@ class UserAuthController extends GetxController with StateMixin<User> {
         } catch (e) {
           print(e.toString());
           responseStatusError(null, e.toString(), RxStatus.error());
+        } finally {
+          change(null, status: RxStatus.empty());
         }
       } else {
         change(null, status: RxStatus.error());
@@ -288,10 +299,10 @@ class UserAuthController extends GetxController with StateMixin<User> {
     });
   }
 
-  void addPaymentAccount(String paymentMethodId, String number) {
+  Future<dynamic> addPaymentAccount(String paymentMethodId, String number) async {
     print(userAuth.read('user')['token']);
     change(null, status: RxStatus.loading());
-    UserProvider()
+    await UserProvider()
         .addPaymentAccount(
             userAuth.read('user')['token'], paymentMethodId, number)
         .then((response) {
@@ -310,21 +321,14 @@ class UserAuthController extends GetxController with StateMixin<User> {
         try {
           var data = Payment.fromJson(response.body['data']['payment']);
 
-          // Mendapatkan list payment_account dari GetStorage
-          var paymentAccountList = userAuth.read('payment_account') ?? [];
+          StaticData.payment.add(data);
 
-          // Konversi objek Payment menjadi Map
-          var paymentMap = data.toJson();
+          var paymentAccountListNew = StaticData.payment.map((payment) => payment.toJson()).toList();
+          print("len payemnt ctrl: ${paymentAccountListNew.length}");
+          StaticData.box.write('payment_account', paymentAccountListNew);
 
-          paymentAccountList.add(paymentMap); // Menambahkan Map baru
-
-          // Menyimpan ulang list payment_account yang diperbarui ke GetStorage
-          userAuth.write('payment_account', paymentAccountList);
-
-          print(paymentAccountList.length);
-          print(paymentAccountList.first);
           print("success");
-          change(null, status: RxStatus.success());
+          change(paymentAccountListNew, status: RxStatus.success());
         } catch (e) {
           responseStatusError(null, e.toString(), RxStatus.error());
         }
@@ -336,7 +340,7 @@ class UserAuthController extends GetxController with StateMixin<User> {
     });
   }
 
-  void getAllPaymentAccountUsers() async {
+  Future<dynamic> getAllPaymentAccountUsers() async {
     change(null, status: RxStatus.loading());
     try {
       await UserProvider().getAllPaymentUsers().then((response) {
@@ -375,7 +379,7 @@ class UserAuthController extends GetxController with StateMixin<User> {
 
 
             print(StaticData.payment.length);
-            change(null, status: RxStatus.success());
+            change(paymentData, status: RxStatus.success());
           } catch (e) {
             print(e.toString());
             responseStatusError(null, e.toString(), RxStatus.error());
@@ -410,13 +414,11 @@ class UserAuthController extends GetxController with StateMixin<User> {
             var paymentAccountList = StaticData.payment.map((payment) => payment.toJson()).toList();
             StaticData.box.write('payment_account', paymentAccountList);
 
-            change(null, status: RxStatus.success());
+            change(paymentAccountList, status: RxStatus.success());
             print("success delete payment account");
           } catch (e) {
             print(e.toString());
             change(null, status: RxStatus.error());
-          } finally {
-            change(null, status: RxStatus.empty());
           }
         }
       }, onError: (e) {

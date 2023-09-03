@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/book_ticket/bindings/book_ticket_binding.dart';
+import '../modules/book_ticket/views/book_ticket_view.dart';
 import '../modules/change-password/bindings/change_password_binding.dart';
 import '../modules/change-password/views/change_password_view.dart';
 import '../modules/chat/bindings/chat_binding.dart';
@@ -10,6 +12,8 @@ import '../modules/feed_detail/bindings/feed_detail_binding.dart';
 import '../modules/feed_detail/views/feed_detail_view.dart';
 import '../modules/feeds-like/bindings/feeds_like_binding.dart';
 import '../modules/feeds-like/views/feeds_like_view.dart';
+import '../modules/history_transaction/bindings/history_transaction_binding.dart';
+import '../modules/history_transaction/views/history_transaction_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/landing/bindings/landing_binding.dart';
@@ -133,6 +137,16 @@ class AppPages {
       name: _Paths.PAYMENT_ACCOUNT,
       page: () => const PaymentAccountView(),
       binding: PaymentAccountBinding(),
+    ),
+    GetPage(
+      name: _Paths.BOOK_TICKET,
+      page: () => BookTicketView(null, null),
+      binding: BookTicketBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY_TRANSACTION,
+      page: () => const HistoryTransactionView(),
+      binding: HistoryTransactionBinding(),
     ),
   ];
 }

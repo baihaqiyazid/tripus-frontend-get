@@ -61,6 +61,19 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
                 ],
               ),
             ),
+            SizedBox(height: 28,),
+            GestureDetector(
+              onTap: () => Get.toNamed(Routes.HISTORY_TRANSACTION),
+              child: Row(
+                children: [
+                  Icon(Icons.money, size: 25,),
+                  SizedBox(width: 10,),
+                  Text('History Transaction', style: primaryTextStylePlusJakartaSans.copyWith(
+                      fontWeight: semibold, fontSize: 14
+                  ),)
+                ],
+              ),
+            ),
             Spacer(),
             Text('Delete Account', style: primaryTextStylePlusJakartaSans.copyWith(
               fontWeight: semibold, fontSize: 14, color: Colors.red,

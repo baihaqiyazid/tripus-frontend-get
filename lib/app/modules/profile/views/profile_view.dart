@@ -21,7 +21,7 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    print(users!.first.name);
+    print(users!);
     String? name = users!.first.name;
     String? userName = name != null ? toBeginningOfSentenceCase(name) : '';
 
@@ -191,6 +191,7 @@ class ProfileView extends GetView<ProfileController> {
                             return GestureDetector(
                                 onTap: () =>
                                     Get.toNamed(Routes.FEED_DETAIL,
+                                        arguments: users!.first.id,
                                         parameters: {
                                           'id': feedsUserLogged![index].id
                                               .toString()

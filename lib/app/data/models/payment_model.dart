@@ -15,7 +15,7 @@ class Payment {
       this.id});
 
   Payment.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
+    userId = json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null;
     paymentMethodId = json['payment_method_id'];
     number = int.parse(json['number']);
     updatedAt = json['updated_at'];

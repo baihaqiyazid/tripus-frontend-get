@@ -29,11 +29,14 @@ class _FeedsWidgetState extends State<FeedsWidget> {
 
   int feedLikeLength = 0;
 
+
   @override
   void initState() {
     super.initState();
+
+    print("feed widget length: ${widget.feeds.feedsLikes?.length}");
     Get.put(FeedsController());
-    feedLikeLength = widget.feeds.feedsLikes!.length;
+    feedLikeLength = widget.feeds.feedsLikes != null ? widget.feeds.feedsLikes!.length : 0;
     if(widget.feeds.feedsLikes!.any((element) => element.userId == GetStorage().read('user')['id'])){
       isLiked = true;
     };
@@ -143,6 +146,7 @@ class _FeedsWidgetState extends State<FeedsWidget> {
   }
 
   Widget header() {
+    print("user ${widget.feeds.user}" );
     return Row(
       children: [
         widget.feeds.user!.profilePhotoPath == null
@@ -224,6 +228,8 @@ class _FeedsWidgetState extends State<FeedsWidget> {
   }
 
   Widget build(BuildContext context) {
+    print("ffedds wigdet");
+    print("user ${widget.feeds.user}" );
     List<Widget> imageSliders = this
         .widget.feeds
         .feedImage!

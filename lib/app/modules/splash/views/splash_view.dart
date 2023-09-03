@@ -4,7 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../controllers/home_page_controller.dart';
+import '../../../controllers/order_controller.dart';
+import '../../../controllers/user_auth_controller.dart';
 import '../../landing/views/landing_view.dart';
+import 'package:get/get.dart';
 import '../controllers/splash_controller.dart';
 
 class SplashView extends StatefulWidget {
@@ -16,22 +20,36 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView>{
 
+  // var orderController = Get.find<OrderController>();
+
+
   @override
   void initState() {
     super.initState();
+    Get.lazyPut(() => UserAuthController());
+    Get.lazyPut(() => HomePageController());
+    Get.lazyPut(() => OrderController());
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 2), () {
-      // GetStorage().erase();
-      print("read storage ${GetStorage().read('user').runtimeType}");
+    // Future.delayed(Duration(seconds: 2), () {
+    //   // GetStorage().erase();
+    //   print("read storage ${GetStorage().read('user').runtimeType}");
+    //
+    // });
+    Future.delayed(Duration.zero, () async {
+      await Get.find<HomePageController>().getData();
+      await Get.find<UserAuthController>().getAllUsers();
+      await Get.find<UserAuthController>().getAllPaymentAccountUsers();
+      await Get.find<OrderController>().getOrdersByEmail();
       if (GetStorage().read('user') != null) {
         Get.offNamed('/home');
       } else {
         Get.to(() => LandingView());
       }
     });
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
