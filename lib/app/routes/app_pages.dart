@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/agent_detail_transaction/bindings/agent_detail_transaction_binding.dart';
+import '../modules/agent_detail_transaction/views/agent_detail_transaction_view.dart';
 import '../modules/book_ticket/bindings/book_ticket_binding.dart';
 import '../modules/book_ticket/views/book_ticket_view.dart';
 import '../modules/change-password/bindings/change_password_binding.dart';
@@ -8,10 +10,10 @@ import '../modules/chat/bindings/chat_binding.dart';
 import '../modules/chat/views/chat_view.dart';
 import '../modules/edit-profile/bindings/edit_profile_binding.dart';
 import '../modules/edit-profile/views/edit_profile_view.dart';
+import '../modules/explore/bindings/explore_binding.dart';
+import '../modules/explore/views/explore_view.dart';
 import '../modules/feed_detail/bindings/feed_detail_binding.dart';
 import '../modules/feed_detail/views/feed_detail_view.dart';
-import '../modules/feeds-like/bindings/feeds_like_binding.dart';
-import '../modules/feeds-like/views/feeds_like_view.dart';
 import '../modules/history_transaction/bindings/history_transaction_binding.dart';
 import '../modules/history_transaction/views/history_transaction_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -89,9 +91,9 @@ class AppPages {
       binding: MainPageBinding(),
     ),
     GetPage(
-      name: _Paths.FEEDS_LIKE,
-      page: () => const FeedsLikeView(),
-      binding: FeedsLikeBinding(),
+      name: _Paths.EXPLORE,
+      page: () => ExploreView(),
+      binding: ExploreBinding(),
     ),
     GetPage(
       name: _Paths.NOTIF,
@@ -147,6 +149,11 @@ class AppPages {
       name: _Paths.HISTORY_TRANSACTION,
       page: () => const HistoryTransactionView(),
       binding: HistoryTransactionBinding(),
+    ),
+    GetPage(
+      name: _Paths.AGENT_DETAIL_TRANSACTION,
+      page: () => const AgentDetailTransactionView(),
+      binding: AgentDetailTransactionBinding(),
     ),
   ];
 }

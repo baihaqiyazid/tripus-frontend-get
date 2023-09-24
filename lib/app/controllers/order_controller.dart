@@ -4,6 +4,7 @@ import 'package:tripusfrontend/app/controllers/user_auth_controller.dart';
 import 'package:tripusfrontend/app/data/providers/orders_provider.dart';
 import 'package:tripusfrontend/app/routes/app_pages.dart';
 
+import '../data/models/orders_agent_model.dart';
 import '../data/models/orders_model.dart';
 import '../data/static_data.dart';
 import '../helpers/dialog_widget.dart';
@@ -81,6 +82,49 @@ class OrderController extends GetxController with StateMixin<dynamic>{
     }
   }
 
+  Future<dynamic> getOrdersByAgent() async{
+    change(null, status: RxStatus.loading());
+    try {
+      await OrdersProvider()
+          .getDataOrderAgent()
+          .then((response) {
+        print("response agent: ${response.body}");
+        if (response.statusCode == 400) {
+          String errors = response.body['data']['errors'];
+          responseStatusError(null, errors, RxStatus.error());
+        } else if (response.statusCode == 500) {
+          change(null, status: RxStatus.error());
+          dialogError('Sorry, Internal Server Error!');
+        } else if (response.statusCode == 200) {
+          try {
+            StaticData.ordersAgent.clear();
+
+            for(var i = 0; i<response.body['data'].length; i++){
+                print('start add 2');
+                var data = OrdersAgent.fromJson(
+                    response.body['data'][i]);
+                StaticData.ordersAgent.add(data);
+                // print(data.toJson());
+              print('end add');
+            }
+
+            print(StaticData.ordersAgent.length);
+            change(null, status: RxStatus.success());
+            print("success get data order agent");
+          } catch (e) {
+            print(e.toString());
+            change(null, status: RxStatus.error());
+          }
+        }
+      }, onError: (e) {
+        responseStatusError(null, e.toString(), RxStatus.error());
+      });
+    } catch (e) {
+      print(e.toString());
+      change(null, status: RxStatus.error());
+    }
+  }
+
   Future<dynamic> cancelPayment(String orderId) async{
     change(null, status: RxStatus.loading());
     try {
@@ -121,6 +165,7 @@ class OrderController extends GetxController with StateMixin<dynamic>{
       int qty,
       String name,
       String email,
+      dynamic address,
       dynamic phone,
       int feedId,
       ) async {
@@ -137,6 +182,7 @@ class OrderController extends GetxController with StateMixin<dynamic>{
            qty,
            name,
            email,
+           address,
            phone,
           feedId
         )
@@ -165,6 +211,9 @@ class OrderController extends GetxController with StateMixin<dynamic>{
             } finally {
               change(null, status: RxStatus.empty());
             }
+          } else {
+            dialogError("Oops! Please try again!");
+            change(null, status: RxStatus.empty());
           }
         }, onError: (e) {
           responseStatusError(null, e.toString(), RxStatus.error());
@@ -172,6 +221,8 @@ class OrderController extends GetxController with StateMixin<dynamic>{
       } catch (e) {
         print(e.toString());
         change(null, status: RxStatus.error());
+      } finally {
+        change(null, status: RxStatus.empty());
       }
   }
 }

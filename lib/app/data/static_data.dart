@@ -3,6 +3,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:tripusfrontend/app/data/models/feeds_home_model.dart';
 
+import 'models/orders_agent_model.dart';
 import 'models/orders_model.dart';
 import 'models/payment_model.dart';
 import 'models/user_model.dart';
@@ -12,6 +13,7 @@ class StaticData {
   static List<User> users = [];
   static List<Payment> payment = [];
   static List<Orders> orders = [];
+  static List<OrdersAgent> ordersAgent = [];
   static final box = GetStorage();
 
   static List<FeedsHome>? feedsUserLogged = StaticData.feeds

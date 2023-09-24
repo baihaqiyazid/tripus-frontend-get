@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({super.key});
+  Color color;
+  LoadingWidget({this.color = Colors.blueAccent, super.key});
 
   @override
   Widget build(BuildContext context) {

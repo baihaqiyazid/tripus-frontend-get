@@ -20,6 +20,13 @@ class OrdersProvider extends GetConnect {
     return response;
   }
 
+  Future<Response> getDataOrderAgent() async {
+    final response = await get(
+        url + '/orders', headers: {"Authorization" : StaticData.box.read('user')['token']}
+    );
+    return response;
+  }
+
   Future<Response> createOrders(
     String token,
     String orderId,
@@ -30,6 +37,7 @@ class OrdersProvider extends GetConnect {
     int qty,
     String name,
     String email,
+    dynamic address,
     dynamic phone,
     int feed_id,
   ) async {
@@ -43,6 +51,7 @@ class OrdersProvider extends GetConnect {
         "qty": qty,
         "name": name,
         "email": email,
+        "address": address,
         "phone": phone,
         "feed_id": feed_id
       });

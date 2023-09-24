@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:tripusfrontend/app/data/static_data.dart';
 import 'dart:io';
 
 import '../../helpers/theme.dart';
@@ -60,6 +61,15 @@ class UserProvider extends GetConnect {
   Future<Response> getAllUsers() async {
     final response = await get(
       url + '/users',
+    );
+    return response;
+  }
+
+  Future<Response> logout() async {
+    final response = await get(
+      url + '/logout', headers: {
+        'Authorization': StaticData.box.read('user')['token']
+    }
     );
     return response;
   }

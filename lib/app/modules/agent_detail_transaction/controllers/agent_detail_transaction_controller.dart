@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-class FeedsLikeController extends GetxController {
-  //TODO: Implement FeedsLikeController
+class AgentDetailTransactionController extends GetxController {
+  //TODO: Implement AgentDetailTransactionController
 
   final count = 0.obs;
   @override

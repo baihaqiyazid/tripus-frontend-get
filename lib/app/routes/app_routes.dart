@@ -11,7 +11,7 @@ abstract class Routes {
   static const VERIFY = _Paths.VERIFY;
   static const SPLASH = _Paths.SPLASH;
   static const MAIN_PAGE = _Paths.MAIN_PAGE;
-  static const FEEDS_LIKE = _Paths.FEEDS_LIKE;
+  static const EXPLORE = _Paths.EXPLORE;
   static const NOTIF = _Paths.NOTIF;
   static const CHAT = _Paths.CHAT;
   static const PROFILE = _Paths.PROFILE;
@@ -23,6 +23,7 @@ abstract class Routes {
   static const PAYMENT_ACCOUNT = _Paths.PAYMENT_ACCOUNT;
   static const BOOK_TICKET = _Paths.BOOK_TICKET;
   static const HISTORY_TRANSACTION = _Paths.HISTORY_TRANSACTION;
+  static const AGENT_DETAIL_TRANSACTION = _Paths.AGENT_DETAIL_TRANSACTION;
 }
 
 abstract class _Paths {
@@ -35,7 +36,7 @@ abstract class _Paths {
   static const LANDING = '/landing';
   static const VERIFY = '/verify';
   static const MAIN_PAGE = '/main-page';
-  static const FEEDS_LIKE = '/feeds-like';
+  static const EXPLORE = '/explore';
   static const NOTIF = '/notif';
   static const CHAT = '/chat';
   static const PROFILE = '/profile';
@@ -47,4 +48,5 @@ abstract class _Paths {
   static const PAYMENT_ACCOUNT = '/payment-account';
   static const BOOK_TICKET = '/book-ticket';
   static const HISTORY_TRANSACTION = '/history-transaction';
+  static const AGENT_DETAIL_TRANSACTION = '/agent-detail-transaction';
 }

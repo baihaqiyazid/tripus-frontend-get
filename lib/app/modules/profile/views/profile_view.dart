@@ -148,7 +148,7 @@ class ProfileView extends GetView<ProfileController> {
                   AvatarCustom(name: users!.first.name!,
                       width: 150,
                       height: 150,
-                      color: Colors.blue,
+                      color: Colors.white,
                       fontSize: 40,
                       radius: 50) : CircleAvatar(
               radius: 60, // Set the radius to control the size of the circle

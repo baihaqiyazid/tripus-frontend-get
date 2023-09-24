@@ -1,215 +1,62 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:tripusfrontend/app/controllers/home_page_controller.dart';
-import 'package:tripusfrontend/app/data/models/feeds_home_model.dart';
-import 'package:tripusfrontend/app/data/static_data.dart';
-import 'package:tripusfrontend/app/helpers/avatar_custom.dart';
-import 'package:tripusfrontend/app/helpers/format_datetime.dart';
-import 'package:tripusfrontend/app/helpers/loading_widget.dart';
-import 'package:tripusfrontend/app/modules/history_transaction/views/widget/content.dart';
-import 'package:tripusfrontend/app/routes/app_pages.dart';
+import 'package:tripusfrontend/app/helpers/theme.dart';
 
-import '../../../controllers/order_controller.dart';
-import '../../../controllers/order_controller.dart';
-import '../../../controllers/order_controller.dart';
+import '../../../data/models/orders_agent_model.dart';
 import '../../../data/models/orders_model.dart';
 import '../../../data/models/user_model.dart';
-import '../../../helpers/theme.dart';
-import '../controllers/history_transaction_controller.dart';
+import '../../../data/static_data.dart';
+import '../../../helpers/format_datetime.dart';
+import '../controllers/agent_detail_transaction_controller.dart';
 
-class HistoryTransactionView extends StatefulWidget {
-  const HistoryTransactionView({Key? key}) : super(key: key);
+class AgentDetailTransactionView extends StatefulWidget{
+  const AgentDetailTransactionView({Key? key}) : super(key: key);
 
   @override
-  State<HistoryTransactionView> createState() => _HistoryTransactionViewState();
+  State<AgentDetailTransactionView> createState() => _AgentDetailTransactionViewState();
 }
 
-class _HistoryTransactionViewState extends State<HistoryTransactionView> {
+class _AgentDetailTransactionViewState extends State<AgentDetailTransactionView> {
+  @override
+
+  bool isPending = true;
+  bool isSuccess = false;
+  bool isCancel = false;
+  bool isExpired = false;
+
   var formatter = NumberFormat.currency(
     locale: 'id_ID',
     symbol: '',
     decimalDigits: 0,
   );
-  List<FeedsHome> feeds =  StaticData.feeds.where((e) => e.type == 'open trip').where((element) => element.userId == StaticData.box.read('user')['id']).toList();
-  RefreshController refreshC = RefreshController();
 
-  @override
-  void initState() {
-    super.initState();
-    Get.lazyPut(() => OrderController());
-    Get.lazyPut(() => HomePageController());
-  }
+  List<OrdersAgent> orders = Get.arguments[0].toList();
+  String title = Get.arguments[1];
+  var user = StaticData.box.read('user');
 
-  void refreshData() async {
-    try {
-      print("refresh");
-      await Future.delayed(Duration(seconds: 1));
-      StaticData.feeds.clear();
-      await initData();
-      setState(() {
-        feeds =  StaticData.feeds.where((e) => e.type == 'open trip').where((element) => element.userId == StaticData.box.read('user')['id']).toList();
-      });
-      refreshC.refreshCompleted();
-    } catch (e) {
-      refreshC.refreshFailed();
-    }
-  }
-
-  Future initData() async {
-    await Get.find<OrderController>().getOrdersByEmail();
-    await Get.find<OrderController>().getOrdersByAgent();
-    await Get.find<HomePageController>().getData();
-  }
-
-  void loadData() async {
-    try {
-      print("load ulang");
-      if (StaticData.feeds.length >= StaticData.feeds.length + 1) {
-        // stop gaada user di database .... sudah abis datanya
-        refreshC.loadNoData();
-      } else {
-        await initData();
-        setState(() {});
-        refreshC.loadComplete();
-      }
-    } catch (e) {
-      refreshC.loadFailed();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print('feeds: ${feeds.length}');
-    User user = User.fromJson(StaticData.box.read('user'));
-    List<Orders> orders = StaticData.orders;
-    var orderController = Get.find<OrderController>();
-    // print("StaticData.orders hist: ${orders.length}");
-
-    handleCancelPayment(String orderId) {
-      print('cancel');
-      showDialog(
-        context: context, // Pastikan Anda memiliki akses ke BuildContext
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  20.0), // Radius yang Anda inginkan
-            ),
-            child: Container(
-              height: 300,
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(Icons.warning_rounded, color: Colors.red, size: 30,),
-                      SizedBox(width: Get.size.width * 0.25,),
-                      IconButton(
-                          onPressed: () => Get.back(),
-                          splashRadius: 25,
-                          icon: SvgPicture.asset('assets/icon_close.svg')
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 15,),
-                  Text("Warning !", style: primaryTextStyle.copyWith(
-                      fontSize: 20,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold
-                  ),),
-                  SizedBox(height: 24,),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: 22, right: 22, top: 7, bottom: 17),
-                    child: Text(
-                      "It will be impossible to undo this action. Do you want to continue?",
-                      style: primaryTextStylePlusJakartaSans.copyWith(
-                          fontSize: 14,
-                          fontWeight: semibold,
-                          overflow: TextOverflow.fade
-                      ), textAlign: TextAlign.justify,),
-                  ),
-                  SizedBox(height: 24,),
-                  Container(
-                    width: 200,
-                    child: GetBuilder<OrderController>(builder: (orderController) {
-                      return orderController.status.isLoading ? Center(child: LoadingWidget()) :
-                      ElevatedButton(
-                          onPressed: () async {
-                            await Get.find<OrderController>()
-                                .cancelPayment(orderId)
-                                .then((value) => {
-                                  refreshData(),
-                                  Get.back(),
-                                  Get.back()
-                                });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    10), // Set the desired border radius
-                              ),
-                            ),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.red),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Yes, Cancel",
-                              style: buttonPrimaryTextStyle.copyWith(
-                                  fontSize: 16, fontWeight: semibold),
-                            ),
-                          )
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
+    print("arg: ${orders.length}" );
+    print("pending: ${isPending}");
+    if(true){
+      setState(() {
+        orders = Get.arguments[0].toList();
+        if(isPending){
+          orders = orders.where((element) => element.status == 'pending').toList();
+        }else if(isSuccess){
+          orders = orders.where((element) => element.status == 'success').toList();
+        }else if(isCancel){
+          orders = orders.where((element) => element.status == 'cancel').toList();
+        }else if(isExpired){
+          orders = orders.where((element) => element.status == 'expired').toList();
+        }
+      });
     }
 
-    Widget profile() {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text(
-            user.name!,
-            style: primaryTextStylePlusJakartaSans.copyWith(
-                color: Colors.white, fontSize: 16),
-          ),
-          user.profilePhotoPath == null
-              ? AvatarCustom(
-            name: user.name!,
-            width: 30,
-            height: 30,
-            color: Colors.blue,
-            fontSize: 30,
-            radius: 30,
-            backgroundColor: Colors.white,
-          )
-              : CircleAvatar(
-            radius: 30, // Setengah dari lebar atau tinggi gambar
-            backgroundImage: NetworkImage(
-              urlImage + user.profilePhotoPath!,
-            ),
-          ),
-        ],
-      );
-    }
 
     Widget contentSeeDetail(String title, String value) {
       return Column(
@@ -246,7 +93,7 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
       );
     }
 
-    Widget seeDetails(Orders order) {
+    Widget seeDetails(OrdersAgent order) {
       return Container(
         width: double.infinity,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
@@ -349,7 +196,7 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
                         height: 8,
                       ),
                       Text(
-                        order.feeds!.agentName!,
+                        user['name'],
                         style: primaryTextStylePlusJakartaSans.copyWith(
                           fontSize: 14,
                           overflow: TextOverflow.fade,
@@ -359,7 +206,7 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
                       ),
                     ],
                   ),
-                  contentSeeDetail('Order Name', user.name!),
+                  contentSeeDetail('Order Name', order.name!),
                   contentSeeDetail(
                       'Quantity', "${order.qty.toString()} tickets"),
                   contentSeeDetail('Transaction Date',
@@ -535,28 +382,6 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
               padding: EdgeInsets.only(left: 22, right: 13, top: 7, bottom: 17),
               child: Row(
                   children: [
-                    order.status != 'pending' ? Container() :
-                    ElevatedButton(
-                      onPressed: () => handleCancelPayment(order.id!),
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                10), // Set the desired border radius
-                          ),
-                        ),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.red),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Cancel",
-                          style: buttonPrimaryTextStyle.copyWith(
-                              fontSize: 16, fontWeight: semibold),
-                        ),
-                      ),
-                    ),
                     Spacer(),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -612,7 +437,7 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
       );
     }
 
-    Widget buttonSeeDetails(Orders order) {
+    Widget buttonSeeDetails(OrdersAgent order) {
       return Container(
         width: 115,
         child: ElevatedButton(
@@ -660,40 +485,10 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
         ),
       );
     }
-
-    Widget buttonRating() {
-      return Container(
-        width: 115,
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ButtonStyle(
-            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-              EdgeInsets.symmetric(
-                  vertical: 2,
-                  horizontal: 25), // Set the desired padding values
-            ),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(10), // Set the desired border radius
-              ),
-            ),
-            backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.orangeAccent),
-          ),
-          child: Text(
-            "Rate Agent",
-            style: buttonPrimaryTextStyle.copyWith(
-                fontSize: 11, fontWeight: semibold, color: Colors.white),
-          ),
-        ),
-      );
-    }
-
-    Widget content(Orders order) {
+    Widget content(OrdersAgent order) {
       // print(order.feeds!.agentName);
       return Container(
-        margin: EdgeInsets.only(bottom: 20, left: 20),
+        margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
@@ -740,13 +535,13 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
                     children: [
                       // TITLE TRIP
                       Text(
-                        order.feeds?.title ?? '',
+                        order.name!,
                         style: primaryTextStylePlusJakartaSans.copyWith(
                             fontWeight: semibold, fontSize: 16),
                       ),
                       // TRIP AGENT NAME
                       Text(
-                        order.feeds?.agentName ?? '',
+                        user['name'],
                         style: primaryTextStylePlusJakartaSans.copyWith(
                             fontSize: 12),
                         overflow: TextOverflow.fade,
@@ -848,137 +643,122 @@ class _HistoryTransactionViewState extends State<HistoryTransactionView> {
       );
     }
 
-    Widget header() {
-      return Container(
-        margin: EdgeInsets.only(left: 0, right: 20),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppBar(
-                automaticallyImplyLeading: false,
-                shadowColor: Colors.transparent,
-                backgroundColor: Colors.transparent,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () => Get.toNamed(Routes.HOME),
-                      splashRadius: 25,
-                      icon: SvgPicture.asset(
-                        'assets/icon_home.svg',
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Home',
-                      style: primaryTextStylePlusJakartaSans.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 30.0, top: 38),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "HISTORY",
-                      style: primaryTextStylePlusJakartaSans.copyWith(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(1, 2), // Mengatur offset bayangan
-                            blurRadius: 1, // Mengatur intensitas blur
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      "TRANSACTION",
-                      style: primaryTextStylePlusJakartaSans.copyWith(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(1, 2), // Mengatur offset bayangan
-                            blurRadius: 1, // Mengatur intensitas blur
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              profile(),
-              SizedBox(
-                height: 50,
-              ),
-              StaticData.box.read('user')['role'] == 'open trip' ? ContentWidget(feeds: feeds,) :
-              Column(
-                children: orders.map((e) => content(e)).toList(),
-              )
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
-        body: SmartRefresher(
-          controller: refreshC,
-          enablePullDown: true,
-          enablePullUp: true,
-          onRefresh: refreshData,
-          footer: CustomFooter(
-            builder: (context, mode) {
-              if (mode == LoadStatus.idle) {
-                return Center(child: Text("Load more"));
-              } else if (mode == LoadStatus.loading) {
-                return Center(
-                  child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CupertinoActivityIndicator()),
-                );
-              } else if (mode == LoadStatus.failed) {
-                return Center(child: Text("Load Failed!Click retry!"));
-              } else if (mode == LoadStatus.canLoading) {
-                return Center(child: Text("release to load more"));
-              } else {
-                return Center();
-              }
-            },
-          ),
-          onLoading: loadData,
-          child: SingleChildScrollView(
-            child: Stack(
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        title: Text(title, style: primaryTextStylePlusJakartaSans.copyWith(
+          fontSize: 18, fontWeight: FontWeight.bold
+        ),),
+        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: true,
+
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  width: double.infinity,
-                  height: 290,
-                  decoration: BoxDecoration(
-                      color: textButtonSecondaryColor,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
+                Column(
+                  children: [
+                    TextButton(
+                        onPressed: (){
+                          setState(() {
+                            isPending = true;
+                            isSuccess = false;
+                            isCancel = false;
+                            isExpired = false;
+                          });
+                        },
+                        child:  Text('Pending', style: primaryTextStylePlusJakartaSans.copyWith(
+                            fontSize: 14, fontWeight: semibold
+                        ),),
+                    ),
+                    isPending ?
+                    Container(
+                      width: 60,
+                        child: Divider(thickness: 2, height: 1, color: textButtonSecondaryColor,)
+                    ) : Container()
+                  ],
                 ),
-                header(),
+                Column(
+                  children: [
+                    TextButton(
+                      onPressed: (){
+                        setState(() {
+                          isPending = false;
+                          isSuccess = true;
+                          isCancel = false;
+                          isExpired = false;
+                        });
+                      },
+                      child:  Text('Successful', style: primaryTextStylePlusJakartaSans.copyWith(
+                          fontSize: 14, fontWeight: semibold
+                      ),),
+                    ),
+                    isSuccess ?
+                    Container(
+                        width: 60,
+                        child: Divider(thickness: 2, height: 1, color: textButtonSecondaryColor,)
+                    ) : Container()
+                  ],
+                ),
+                Column(
+                  children: [
+                    TextButton(
+                      onPressed: (){
+                        setState(() {
+                          isPending = false;
+                          isSuccess = false;
+                          isCancel = true;
+                          isExpired = false;
+                        });
+                      },
+                      child:  Text('Canceled', style: primaryTextStylePlusJakartaSans.copyWith(
+                          fontSize: 14, fontWeight: semibold
+                      ),),
+                    ),
+                    isCancel ?
+                    Container(
+                        width: 60,
+                        child: Divider(thickness: 2, height: 1, color: textButtonSecondaryColor,)
+                    ) : Container()
+                  ],
+                ),
+                Column(
+                  children: [
+                    TextButton(
+                      onPressed: (){
+                        setState(() {
+                          isPending = false;
+                          isSuccess = false;
+                          isCancel = false;
+                          isExpired = true;
+                        });
+                      },
+                      child:  Text('Expired', style: primaryTextStylePlusJakartaSans.copyWith(
+                          fontSize: 14, fontWeight: semibold
+                      ),),
+                    ),
+                    isExpired ?
+                    Container(
+                        width: 60,
+                        child: Divider(thickness: 2, height: 1, color: textButtonSecondaryColor,)
+                    ) : Container()
+                  ],
+                ),
               ],
             ),
-          ),
-        ));
+            SizedBox(height: 20,),
+            SingleChildScrollView(
+              child: Column(
+                children: orders.map((e) => content(e)).toList(),
+              ),
+            )
+          ],
+        )
+      )
+    );
   }
 }

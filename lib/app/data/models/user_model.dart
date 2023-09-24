@@ -3,6 +3,7 @@ class User {
   String? name;
   dynamic username;
   String? email;
+  String? address;
   String? token;
   dynamic emailVerifiedAt;
   dynamic birthdate;
@@ -25,6 +26,7 @@ class User {
       this.name,
       this.username,
       this.email,
+        this.address,
       this.token,
       this.emailVerifiedAt,
       this.birthdate,
@@ -46,6 +48,7 @@ class User {
     name = json['name'];
     username = json['username'];
     email = json['email'];
+    address = json['address'];
     emailVerifiedAt = json['email_verified_at'];
     birthdate = json['birthdate'];
     bio = json['bio'];
@@ -70,6 +73,7 @@ class User {
     data['role'] = role;
     data['username'] = username;
     data['email'] = email;
+    data['address'] = address;
     data['token'] = token;
     data['email_verified_at'] = emailVerifiedAt;
     data['birthdate'] = birthdate;

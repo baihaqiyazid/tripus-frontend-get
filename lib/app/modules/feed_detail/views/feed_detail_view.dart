@@ -65,7 +65,10 @@ class _FeedDetailViewState extends State<FeedDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    // print(feeds?.description);
+    if(feeds!.cancelTrip!.isNotEmpty){
+      print(feeds?.cancelTrip?.first.toJson());
+    }
+
     // print('id param ${Get.parameters.id}');
     print("arg: ${Get.arguments}");
     print("param: ${int.parse(Get.parameters['id'] ?? '0')}");
@@ -304,7 +307,7 @@ class _FeedDetailViewState extends State<FeedDetailView> {
                       width: 40,
                       height: 10,
                       fontSize: 16,
-                      color: Colors.blueAccent,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(
@@ -350,7 +353,8 @@ class _FeedDetailViewState extends State<FeedDetailView> {
           SizedBox(
             height: 30,
           ),
-          buttonBook(),
+          StaticData.box.read('user')['role'] != 'open trip' ?
+          buttonBook() : Container(),
           SizedBox(
             height: 10,
           ),
@@ -568,7 +572,7 @@ class _FeedDetailViewState extends State<FeedDetailView> {
                           onPressed: () {
                             final MainProfileController mainProfileController =
                                 Get.find();
-                            mainProfileController.updateData(Get.arguments);
+                            mainProfileController.updateData(Get.arguments != null ? Get.arguments : StaticData.box.read('user')['id']);
                             Get.back();
                           },
                         ),

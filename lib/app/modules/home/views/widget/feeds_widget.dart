@@ -162,7 +162,7 @@ class _FeedsWidgetState extends State<FeedsWidget> {
                       width: 40,
                       height: 10,
                       fontSize: 16,
-                      color: Colors.blueAccent,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(

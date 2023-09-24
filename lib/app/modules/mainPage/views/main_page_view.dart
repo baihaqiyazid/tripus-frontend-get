@@ -11,7 +11,7 @@ import 'package:tripusfrontend/app/modules/notif/views/notif_view.dart';
 
 import '../../../helpers/theme.dart';
 import '../../../routes/app_pages.dart';
-import '../../feeds-like/views/feeds_like_view.dart';
+import '../../explore/views/explore_view.dart';
 import '../controllers/main_page_controller.dart';
 
 class MainPageView extends StatefulWidget {
@@ -170,7 +170,7 @@ class _MainPageViewState extends State<MainPageView> {
       case 0:
         return HomeView();
       case 1:
-        return FeedsLikeView();
+        return ExploreView();
       case 2:
         return NotifView();
       case 3:

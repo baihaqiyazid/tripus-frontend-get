@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:tripusfrontend/app/controllers/order_controller.dart';
 import 'package:tripusfrontend/app/routes/app_pages.dart';
 
 import '../data/models/payment_model.dart';
@@ -22,6 +23,7 @@ class UserAuthController extends GetxController with StateMixin<dynamic> {
   void onInit() {
     change(null, status: RxStatus.empty());
     Get.lazyPut(() => MainProfileController());
+    Get.lazyPut(() => OrderController());
     super.onInit();
   }
 
@@ -181,6 +183,10 @@ class UserAuthController extends GetxController with StateMixin<dynamic> {
               userAuth.write('user', data.toJson());
               print("read storage ${userAuth.read('user')}");
               print(data.toJson());
+              Future.delayed(Duration.zero, () async{
+                await getAllPaymentAccountUsers();
+                await Get.find<OrderController>().getOrdersByEmail();
+              });
               change(data, status: RxStatus.success());
               Get.offAllNamed('/home');
             } catch (e) {
@@ -229,6 +235,38 @@ class UserAuthController extends GetxController with StateMixin<dynamic> {
               }
             }
             print(StaticData.users.length);
+            change(null, status: RxStatus.success());
+          } catch (e) {
+            print(e.toString());
+            responseStatusError(null, e.toString(), RxStatus.error());
+          } finally {
+            change(null, status: RxStatus.empty());
+          }
+        } else {}
+      });
+    } catch (e) {
+      responseStatusError(null, e.toString(), RxStatus.error());
+    }
+  }
+
+  Future<dynamic> logout() async {
+    print('start');
+    change(null, status: RxStatus.loading());
+    try {
+      await UserProvider().logout().then((response) {
+        print(response.body);
+        if (response.statusCode == 400 ||
+            response.statusCode == 401 ||
+            response.statusCode == 404) {
+          String errors = response.body['data']['errors'];
+          responseStatusError(null, errors, RxStatus.error());
+        } else if (response.statusCode == 500) {
+          change(null, status: RxStatus.error());
+          dialogError('Sorry, Internal Server Error!');
+        } else if (response.statusCode == 200) {
+          try {
+            GetStorage().erase();
+            Get.offAllNamed(Routes.LOGIN);
             change(null, status: RxStatus.success());
           } catch (e) {
             print(e.toString());

@@ -41,9 +41,11 @@ class _SplashViewState extends State<SplashView>{
     Future.delayed(Duration.zero, () async {
       await Get.find<HomePageController>().getData();
       await Get.find<UserAuthController>().getAllUsers();
-      await Get.find<UserAuthController>().getAllPaymentAccountUsers();
-      await Get.find<OrderController>().getOrdersByEmail();
+
+
       if (GetStorage().read('user') != null) {
+        await Get.find<UserAuthController>().getAllPaymentAccountUsers();
+        await Get.find<OrderController>().getOrdersByEmail();
         Get.offNamed('/home');
       } else {
         Get.to(() => LandingView());

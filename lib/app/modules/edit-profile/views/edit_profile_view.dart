@@ -206,11 +206,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   urlImage + user.profilePhotoPath!),
                             )
                           : AvatarCustom(
-                              name: 'Baihaqi',
+                              name: user.name!,
                               width: 80,
                               height: 80,
-                              color: Colors.blue,
-                              fontSize: 24,
+                              color: Colors.white,
+                              fontSize: 40,
                               radius: 50),
                   Icon(
                     Icons.camera_enhance_rounded,

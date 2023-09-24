@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -72,6 +74,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    log("user: ${box['name']}");
     Widget category() {
       return Container(
         child: Row(
@@ -291,7 +294,7 @@ class _HomeViewState extends State<HomeView> {
                               onPressed: () {
                                 print('tap');
                                 Get.toNamed(Routes.MAIN_PROFILE,
-                                    parameters: {'id': box.id.toString()});
+                                    parameters: {'id': box['id'].toString()});
                               },
                               icon: AvatarCustom(
                                 name: box['name'],
@@ -299,7 +302,7 @@ class _HomeViewState extends State<HomeView> {
                                 height: 10,
                                 fontSize: 16,
                                 radius: 20,
-                                color: Colors.blueAccent,
+                                color: Colors.white,
                               ),
                             )
                           : IconButton(

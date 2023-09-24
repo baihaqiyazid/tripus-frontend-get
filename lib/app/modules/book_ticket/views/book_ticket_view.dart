@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:nanoid/async.dart';
 import 'package:tripusfrontend/app/controllers/order_controller.dart';
+import 'package:tripusfrontend/app/helpers/loading_widget.dart';
 import 'package:tripusfrontend/app/helpers/theme.dart';
 
 import '../../../data/models/feeds_home_model.dart';
@@ -17,6 +18,7 @@ import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 class BookTicketView extends StatefulWidget {
   FeedsHome? feed;
   int? person;
+
   BookTicketView(this.feed, this.person);
 
   @override
@@ -34,6 +36,7 @@ class _BookTicketViewState extends State<BookTicketView> {
   double admin = 6000;
 
   String paymentAccountValue = '';
+
   void handlePaymentValue(String value) {
     // Do something with the selected category in this class
     setState(() {
@@ -51,6 +54,8 @@ class _BookTicketViewState extends State<BookTicketView> {
 
   @override
   Widget build(BuildContext context) {
+    print("address get: ${user}");
+    var controller = Get.find<OrderController>();
     print(widget.feed?.toJson());
     print(widget.person);
     // DateFormat('yyyyMMddTHHmmss-SSSSSS').format(DateTime.now()).toString();
@@ -68,18 +73,21 @@ class _BookTicketViewState extends State<BookTicketView> {
       print("qty: ${widget.person}");
       print("name: ${user['name']}");
       print("email: ${user['email']}");
-      print("phone: ${user['phone']}");
+      print("phone: ${user['address']}");
+      print("phone: ${user['phone_number']}");
       print("feed_id: ${widget.feed!.id}");
 
-      Get.find<OrderController>().createOrder(
+      controller.createOrder(
           orderID,
           totalPrice,
           widget.feed!.fee!,
-          admin, paymentAccountValue,
+          admin,
+          paymentAccountValue,
           widget.person!,
           user['name'],
           user['email'],
-          user['phone'],
+          user['address'],
+          user['phone_number'],
           widget.feed!.id!
       );
     }
@@ -186,7 +194,9 @@ class _BookTicketViewState extends State<BookTicketView> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "${formatDateNum(widget.feed!.dateStart!)} - ${formatDateNum(widget.feed!.dateEnd!)}",
+                                    "${formatDateNum(widget.feed!
+                                        .dateStart!)} - ${formatDateNum(
+                                        widget.feed!.dateEnd!)}",
                                     style: primaryTextStylePlusJakartaSans
                                         .copyWith(
                                       fontSize: 14,
@@ -228,18 +238,19 @@ class _BookTicketViewState extends State<BookTicketView> {
                                 children: [
                                   widget.feed!.user!.profilePhotoPath == null
                                       ? Icon(
-                                          Icons.person,
-                                          color: Colors.blueAccent,
-                                        )
+                                    Icons.person,
+                                    color: Colors.blueAccent,
+                                  )
                                       : CircleAvatar(
-                                          radius:
-                                              15, // Setengah dari lebar atau tinggi gambar
-                                          backgroundImage: NetworkImage(
-                                            urlImage +
-                                                widget.feed!.user!
-                                                    .profilePhotoPath!,
-                                          ),
-                                        ),
+                                    radius:
+                                    15,
+                                    // Setengah dari lebar atau tinggi gambar
+                                    backgroundImage: NetworkImage(
+                                      urlImage +
+                                          widget.feed!.user!
+                                              .profilePhotoPath!,
+                                    ),
+                                  ),
                                   SizedBox(
                                     width: 10,
                                   ),
@@ -299,34 +310,37 @@ class _BookTicketViewState extends State<BookTicketView> {
                                       'Ticket Trip',
                                       style: primaryTextStylePlusJakartaSans
                                           .copyWith(
-                                              fontSize: 14,
-                                              color: textHintColor,
-                                              fontWeight: semibold),
+                                          fontSize: 14,
+                                          color: textHintColor,
+                                          fontWeight: semibold),
                                     ),
                                     Spacer(),
                                     Container(
                                       width: 140,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             'Rp ',
                                             style:
-                                                primaryTextStylePlusJakartaSans
-                                                    .copyWith(
-                                                        fontSize: 14,
-                                                        color: textHintColor,
-                                                        fontWeight: semibold),
+                                            primaryTextStylePlusJakartaSans
+                                                .copyWith(
+                                                fontSize: 14,
+                                                color: textHintColor,
+                                                fontWeight: semibold),
                                           ),
                                           Text(
-                                            '${formatter.format(widget.feed!.fee!).toString()}  x  ${widget.person!}',
+                                            '${formatter.format(
+                                                widget.feed!.fee!)
+                                                .toString()}  x  ${widget
+                                                .person!}',
                                             style:
-                                                primaryTextStylePlusJakartaSans
-                                                    .copyWith(
-                                                        fontSize: 14,
-                                                        color: textHintColor,
-                                                        fontWeight: semibold),
+                                            primaryTextStylePlusJakartaSans
+                                                .copyWith(
+                                                fontSize: 14,
+                                                color: textHintColor,
+                                                fontWeight: semibold),
                                           ),
                                         ],
                                       ),
@@ -337,34 +351,34 @@ class _BookTicketViewState extends State<BookTicketView> {
                                       'Admin',
                                       style: primaryTextStylePlusJakartaSans
                                           .copyWith(
-                                              fontSize: 14,
-                                              color: textHintColor,
-                                              fontWeight: semibold),
+                                          fontSize: 14,
+                                          color: textHintColor,
+                                          fontWeight: semibold),
                                     ),
                                     Spacer(),
                                     Container(
                                       width: 140,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             'Rp ',
                                             style:
-                                                primaryTextStylePlusJakartaSans
-                                                    .copyWith(
-                                                        fontSize: 14,
-                                                        color: textHintColor,
-                                                        fontWeight: semibold),
+                                            primaryTextStylePlusJakartaSans
+                                                .copyWith(
+                                                fontSize: 14,
+                                                color: textHintColor,
+                                                fontWeight: semibold),
                                           ),
                                           Text(
                                             formatter.format(admin).toString(),
                                             style:
-                                                primaryTextStylePlusJakartaSans
-                                                    .copyWith(
-                                                        fontSize: 14,
-                                                        color: textHintColor,
-                                                        fontWeight: semibold),
+                                            primaryTextStylePlusJakartaSans
+                                                .copyWith(
+                                                fontSize: 14,
+                                                color: textHintColor,
+                                                fontWeight: semibold),
                                           ),
                                         ],
                                       ),
@@ -403,14 +417,14 @@ class _BookTicketViewState extends State<BookTicketView> {
                                 Text(
                                   'Rp ',
                                   style:
-                                      primaryTextStylePlusJakartaSans.copyWith(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold),
+                                  primaryTextStylePlusJakartaSans.copyWith(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   formatter.format(totalPrice).toString(),
                                   style:
-                                      primaryTextStylePlusJakartaSans.copyWith(
+                                  primaryTextStylePlusJakartaSans.copyWith(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                     overflow: TextOverflow.fade,
@@ -445,7 +459,7 @@ class _BookTicketViewState extends State<BookTicketView> {
                   children: [
                     Container(
                       padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                       width: double.infinity,
                       color: textHintColor,
                       child: Text(
@@ -487,40 +501,48 @@ class _BookTicketViewState extends State<BookTicketView> {
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(left: 40, right: 40, top: 20),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (isChecked && paymentAccountValue != '') {
-                    handleBook();
-                  }
-                },
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    EdgeInsets.symmetric(
-                        vertical: 11,
-                        horizontal: 20), // Set the desired padding values
-                  ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          10), // Set the desired border radius
+
+            GetBuilder<OrderController>(builder: (controller) {
+              if (controller.status.isLoading){
+                return LoadingWidget();
+              }else{
+                return Container(
+                  margin: EdgeInsets.only(left: 40, right: 40, top: 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (isChecked && paymentAccountValue != '') {
+                        handleBook();
+                      }
+                    },
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        EdgeInsets.symmetric(
+                            vertical: 11,
+                            horizontal: 20), // Set the desired padding values
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Set the desired border radius
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          isChecked && paymentAccountValue != ''
+                              ? textButtonSecondaryColor
+                              : textHintColor),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Pay Now",
+                        style: buttonPrimaryTextStyle.copyWith(
+                            fontSize: 22, fontWeight: semibold),
+                      ),
                     ),
                   ),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      isChecked && paymentAccountValue != ''
-                          ? textButtonSecondaryColor
-                          : textHintColor),
-                ),
-                child: Center(
-                  child: Text(
-                    "Pay Now",
-                    style: buttonPrimaryTextStyle.copyWith(
-                        fontSize: 22, fontWeight: semibold),
-                  ),
-                ),
-              ),
-            )
+                );
+              }
+
+            })
           ],
         ),
       );
@@ -528,17 +550,17 @@ class _BookTicketViewState extends State<BookTicketView> {
 
     return Scaffold(
         body: SingleChildScrollView(
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 213,
-            color: textButtonSecondaryColor,
+          child: Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 213,
+                color: textButtonSecondaryColor,
+              ),
+              header(),
+              content()
+            ],
           ),
-          header(),
-          content()
-        ],
-      ),
-    ));
+        ));
   }
 }

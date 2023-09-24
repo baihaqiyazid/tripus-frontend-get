@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:tripusfrontend/app/controllers/user_auth_controller.dart';
 import 'package:tripusfrontend/app/routes/app_pages.dart';
 
 import '../../../helpers/theme.dart';
@@ -79,9 +80,14 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
               fontWeight: semibold, fontSize: 14, color: Colors.red,
             ),),
             SizedBox(height: 12,),
-            Text('Log Out', style: primaryTextStylePlusJakartaSans.copyWith(
-              fontWeight: semibold, fontSize: 14, color: Colors.blue,
-            ),)
+            InkWell(
+              onTap: () {
+                Get.find<UserAuthController>().logout();
+              },
+              child: Text('Log Out', style: primaryTextStylePlusJakartaSans.copyWith(
+                fontWeight: semibold, fontSize: 14, color: Colors.blue,
+              ),),
+            )
           ],
         ),
       )
